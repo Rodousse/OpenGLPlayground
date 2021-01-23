@@ -1,0 +1,7 @@
+#Qtcreator user files
+**.user
+
+#Build
+build/
+thirdParty/**
+!thirdParty/CMakeLists.txt
