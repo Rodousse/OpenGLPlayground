@@ -1,5 +1,6 @@
 #include "engine/GLErrorHandling.hpp"
 
+#include <spdlog/spdlog.h>
 #include <stdexcept>
 
 namespace engine
@@ -9,10 +10,13 @@ void printGLError(
 {
     switch(severity)
     {
-        case GL_DEBUG_SEVERITY_HIGH: throw std::runtime_error(message); break;
-        case GL_DEBUG_SEVERITY_MEDIUM: break;
-        case GL_DEBUG_SEVERITY_LOW: break;
-        case GL_DEBUG_SEVERITY_NOTIFICATION: break;
+        case GL_DEBUG_SEVERITY_HIGH:
+            spdlog::critical("Debug Layer : {0}", message);
+            throw std::runtime_error(message);
+            break;
+        case GL_DEBUG_SEVERITY_MEDIUM: spdlog::error("Debug Layer : {0}", message); break;
+        case GL_DEBUG_SEVERITY_LOW: spdlog::warn("Debug Layer : {0}", message); break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: spdlog::trace("Debug Layer : {0}", message); break;
     }
 }
 
