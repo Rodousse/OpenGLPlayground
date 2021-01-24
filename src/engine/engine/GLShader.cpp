@@ -76,7 +76,7 @@ GLShader::~GLShader()
     }
 }
 
-GLuint GLShader::handle() const
+GLuint GLShader::id() const
 {
     return m_shaderObject;
 }

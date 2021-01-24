@@ -3,24 +3,30 @@ set(ENGINE_SRC
     engine/DataIO.cpp
     engine/GLErrorHandling.cpp
     engine/GLProgram.cpp
+    engine/GLSampler.cpp
     engine/GLShader.cpp
+    engine/GLTexture2D.cpp
     engine/Mesh.cpp
     engine/PerspectiveCamera.cpp
     engine/RenderDataManager.cpp
-    engine/Texture2D.cpp)
+    )
 
 set(ENGINE_HEADERS
     engine/Camera.hpp
+    engine/CommonTypes.hpp
     engine/DataIO.hpp
     engine/GLErrorHandling.hpp
+    engine/GLObject.hpp
     engine/GLProgram.hpp
+    engine/GLSampler.hpp
     engine/GLShader.hpp
+    engine/GLTexture2D.hpp
     engine/Mesh.hpp
     engine/PerspectiveCamera.hpp
     engine/RenderData.hpp
     engine/RenderDataManager.hpp
     engine/Scene.hpp
-    engine/Texture2D.hpp)
+    )
 
 
 add_library(engine ${ENGINE_SRC} ${ENGINE_HEADERS})

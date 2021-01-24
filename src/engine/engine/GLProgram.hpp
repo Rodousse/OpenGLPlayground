@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineSymbols.h"
+#include "engine/GLObject.hpp"
 #include "engine/GLShader.hpp"
 
 #include <GL/glew.h>
@@ -16,7 +17,7 @@ struct ENGINE_API PipelineShaderPaths
     std::string fragmentShader;
 };
 
-class ENGINE_API GLProgram
+class ENGINE_API GLProgram : public GLObject
 {
   protected:
     GLuint m_program;
@@ -26,14 +27,11 @@ class ENGINE_API GLProgram
     void move(GLProgram&& other);
 
   public:
-    GLProgram() = delete;
     explicit GLProgram(const PipelineShaderPaths& shaderPaths);
-    GLProgram(const GLProgram&) = delete;
-    GLProgram& operator=(const GLProgram&) = delete;
     GLProgram(GLProgram&& other) noexcept;
     GLProgram& operator=(GLProgram&& other) noexcept;
-    virtual ~GLProgram();
+    ~GLProgram() override;
 
-    GLuint handle() const;
+    GLuint id() const;
 };
 } // namespace engine

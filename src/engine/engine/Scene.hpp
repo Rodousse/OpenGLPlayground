@@ -3,7 +3,6 @@
 #include "engine/Camera.hpp"
 #include "engine/Mesh.hpp"
 
-#include <stbipp/Color.hpp>
 #include <vector>
 
 namespace engine

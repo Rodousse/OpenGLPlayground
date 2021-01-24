@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineSymbols.h"
+#include "engine/GLObject.hpp"
 
 #include <GL/glew.h>
 #include <string>
@@ -9,7 +10,7 @@ namespace engine
 {
 std::string ENGINE_API shaderEnumToString(GLenum value);
 
-ENGINE_API class GLShader
+ENGINE_API class GLShader : public GLObject
 {
   protected:
     GLuint m_shaderObject = 0;
@@ -18,15 +19,12 @@ ENGINE_API class GLShader
     void move(GLShader&& other) noexcept;
 
   public:
-    GLShader() = delete;
     GLShader(const std::string& shaderPath, GLenum shaderType);
-    GLShader(const GLShader&) = delete;
-    GLShader& operator=(const GLShader&) = delete;
     GLShader(GLShader&& other) noexcept;
     GLShader& operator=(GLShader&& other) noexcept;
-    ~GLShader();
+    ~GLShader() override;
 
-    GLuint handle() const;
+    GLuint id() const;
 };
 
 } // namespace engine

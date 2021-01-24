@@ -31,7 +31,7 @@ GLProgram::~GLProgram()
     }
 }
 
-GLuint GLProgram::handle() const
+GLuint GLProgram::id() const
 {
     return m_program;
 }
@@ -62,7 +62,7 @@ void GLProgram::compileAndLinkShadersToProgram(const PipelineShaderPaths& shader
             continue;
         }
         const auto& newShader = m_shaders.emplace(shader.first, GLShader(*(shader.second), shader.first)).first->second;
-        glAttachShader(m_program, newShader.handle());
+        glAttachShader(m_program, newShader.id());
         if(!checkNoGLErrors())
         {
             throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Can't attach shader " +
