@@ -51,11 +51,18 @@ void Renderer::createVaoVboEbo()
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glUseProgram(m_program);
+    m_textureUniID = glGetUniformLocation(m_program, "textureSampler");
+    glUniform1i(m_textureUniID, 0);
+    glUseProgram(0);
 }
 
 void Renderer::render() const
 {
     glUseProgram(m_program);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_texture->id());
     glBindVertexArray(m_vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
@@ -65,6 +72,7 @@ void Renderer::render() const
 
 Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths): engine::GLProgram(shaderPaths)
 {
+    m_texture = std::make_unique<engine::GLTexture2D>(GL_RGB8, 1, 1);
     createVaoVboEbo();
 }
 
@@ -74,4 +82,25 @@ Renderer::~Renderer()
     glDeleteBuffers(1, &m_vboUv);
     glDeleteBuffers(1, &m_ebo);
     glDeleteVertexArrays(1, &m_vao);
+}
+
+void Renderer::setTexture(const stbipp::Image& image)
+{
+    engine::SamplerParameters sampleParams{};
+    sampleParams.minFilter = GL_LINEAR;
+    if(image.width() != m_texture->width() || image.height() != m_texture->height())
+    {
+        m_texture = std::make_unique<engine::GLTexture2D>(GL_RGB8,
+                                                          image.width(),
+                                                          image.height(),
+                                                          GL_RGBA,
+                                                          GL_UNSIGNED_BYTE,
+                                                          image.castData<stbipp::Color4uc>().data(),
+                                                          engine::TextureParameters{},
+                                                          sampleParams);
+    }
+    else
+    {
+        m_texture->setPixelData(GL_RGBA, GL_UNSIGNED_BYTE, image.castData<stbipp::Color4uc>().data());
+    }
 }

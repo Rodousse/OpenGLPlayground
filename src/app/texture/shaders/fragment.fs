@@ -2,8 +2,10 @@
 
 in vec2 vertexUv;
 
+uniform sampler2D textureSampler;
+
 layout(location = 0)out vec4 frag_colour;
 
 void main() {
-    frag_colour = vec4(vertexUv, 1.0f, 1.0f);
+    frag_colour = texture(textureSampler, vertexUv);
 }
