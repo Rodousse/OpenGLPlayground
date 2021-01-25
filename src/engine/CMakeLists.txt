@@ -44,6 +44,6 @@ target_include_directories(engine
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<BUILD_INTERFACE:${GENERATED_DIR}>)
-target_link_libraries(engine PUBLIC Stbipp::Stbipp Eigen3::Eigen spdlog::spdlog_header_only GLEW::GLEW OpenGL::GL PRIVATE assimp::assimp  )
+target_link_libraries(engine PUBLIC Eigen3::Eigen spdlog::spdlog_header_only GLEW::GLEW OpenGL::GL PRIVATE assimp::assimp)
 target_compile_definitions(engine PUBLIC ${ENGINE_STATIC_FLAG} _USE_MATH_DEFINES _ENABLE_EXTENDED_ALIGNED_STORAGE PRIVATE ENGINE_EXPORT)
 
