@@ -4,6 +4,7 @@ set(IMGUI_COMPILE_FLAGS
 
 add_subdirectory(00_triangle)
 add_subdirectory(01_texture)
+add_subdirectory(02_3d_model)
 
 message(STATUS ${WIN_DLL_LIST})
 
