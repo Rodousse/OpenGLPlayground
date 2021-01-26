@@ -34,7 +34,6 @@ bool loadScene(const std::string& path, Scene& scene)
             mesh->name = std::string(aiMesh->mName.C_Str());
             mesh->vertices.resize(aiMesh->mNumVertices);
             mesh->faces.resize(aiMesh->mNumFaces);
-            mesh->hasVertexNormals = aiMesh->HasNormals();
 
             decltype(aiMesh::mNumVertices) vertexIndex = 0;
 
@@ -56,7 +55,7 @@ bool loadScene(const std::string& path, Scene& scene)
                 // consider only one uv set at the moment
                 if(aiMesh->HasTextureCoords(0))
                 {
-                    const auto aiUV = aiMesh->mTextureCoords[vertexIndex][0];
+                    const auto aiUV = aiMesh->mTextureCoords[0][vertexIndex];
                     vertex.uv = {aiUV.x, aiUV.y};
                 }
                 ++vertexIndex;
@@ -68,16 +67,23 @@ bool loadScene(const std::string& path, Scene& scene)
             {
                 const auto& aiFace = aiMesh->mFaces[faceIndex];
 
-                for(std::size_t faceVertexIndex = 0; faceVertexIndex < face.indices.size(); ++faceVertexIndex)
+                for(std::size_t faceVertexIndex = 0; faceVertexIndex < face.size(); ++faceVertexIndex)
                 {
-                    face.indices[faceVertexIndex] = aiFace.mIndices[faceVertexIndex];
+                    face[faceVertexIndex] = aiFace.mIndices[faceVertexIndex];
                 }
-
-                const auto& ab = (mesh->vertices[face.indices[1]].pos - mesh->vertices[face.indices[0]].pos);
-                const auto& ac = (mesh->vertices[face.indices[2]].pos - mesh->vertices[face.indices[0]].pos);
-
-                face.normal = ab.cross(ac).normalized();
                 ++faceIndex;
+            }
+
+            if(!aiMesh->HasNormals())
+            {
+                for(auto& face: mesh->faces)
+                {
+                    const auto& ab = (mesh->vertices[face[1]].pos - mesh->vertices[face[0]].pos);
+                    const auto& ac = (mesh->vertices[face[2]].pos - mesh->vertices[face[0]].pos);
+
+                    mesh->vertices[face[0]].normal = mesh->vertices[face[1]].normal = mesh->vertices[face[2]].normal =
+                      ab.cross(ac).normalized();
+                }
             }
             mesh->refreshBoundingBox();
         }
@@ -88,17 +94,18 @@ bool loadScene(const std::string& path, Scene& scene)
         for(std::size_t camIndex = 0; camIndex < aiScene->mNumCameras; ++camIndex)
         {
             const auto* aiCamera = aiScene->mCameras[camIndex];
+
+            if(!aiCamera)
+            {
+                continue;
+            }
+
             aiNode* cameraNode = aiScene->mRootNode->FindNode(aiCamera->mName);
             aiMatrix4x4 cameraTransform = cameraNode->mTransformation;
             aiMatrix4x4 rotationMatrix = cameraTransform;
             rotationMatrix.a4 = rotationMatrix.b4 = rotationMatrix.c4 = 0.0f;
             rotationMatrix.d4 = 1.0f;
             std::shared_ptr<Camera> camera;
-
-            if(!aiCamera)
-            {
-                continue;
-            }
 
             if(aiCamera->mOrthographicWidth == 0.0f)
             {
@@ -117,6 +124,7 @@ bool loadScene(const std::string& path, Scene& scene)
             up.Normalize();
             aiVector3D forward = rotationMatrix * aiCamera->mLookAt;
             forward.Normalize();
+            forward += position;
             scene.cameras.push_back(camera);
 
             camera->lookAt({position.x, position.y, position.z},

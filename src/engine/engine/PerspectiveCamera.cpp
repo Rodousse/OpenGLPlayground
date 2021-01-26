@@ -10,9 +10,9 @@ void PerspectiveCamera::refreshProjection()
 {
     float yScale = 1.0f / std::tan(m_fov / 2.0f);
     float xScale = yScale / (static_cast<float>(m_viewportDim.x()) / m_viewportDim.y());
-    m_proj << xScale, 0, 0, 0, 0, yScale, 0, 0, 0, 0,
-      -(m_farClipPlane + m_nearClipPlane) / (m_farClipPlane - m_nearClipPlane), -1, 0, 0,
-      -2 * m_nearClipPlane * m_farClipPlane / (m_farClipPlane - m_nearClipPlane), 0;
+    m_proj << xScale, 0.0f, 0.0f, 0.0f, 0.0f, yScale, 0.0f, 0.0f, 0.0f, 0.0f,
+      -(m_farClipPlane + m_nearClipPlane) / (m_farClipPlane - m_nearClipPlane),
+      -(2.0f * m_nearClipPlane * m_farClipPlane) / (m_farClipPlane - m_nearClipPlane), 0.0f, 0.0f, -1.0f, 0.0f;
 }
 
 PerspectiveCamera::PerspectiveCamera(): Camera()

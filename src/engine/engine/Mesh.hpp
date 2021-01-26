@@ -9,10 +9,10 @@
 namespace engine
 {
 /// Used for mesh vertex indexing
-using FaceIndex = std::size_t;
+using FaceIndex = uint32_t;
 
 /// Used for mesh vertex indexing
-using VertexIndex = std::size_t;
+using VertexIndex = uint32_t;
 
 /// Triangle face vertex indices
 using FaceIndices = std::array<VertexIndex, 3>;
@@ -40,15 +40,6 @@ struct ENGINE_API Vertex
 };
 
 /**
- * @brief Vertex description
- */
-struct ENGINE_API Face
-{
-    Vector3 normal{};
-    FaceIndices indices{};
-};
-
-/**
  * @brief Mesh description
  */
 struct ENGINE_API Mesh
@@ -61,10 +52,9 @@ struct ENGINE_API Mesh
     ~Mesh() = default;
 
     std::vector<Vertex> vertices{};
-    std::vector<Face> faces{};
+    std::vector<FaceIndices> faces{};
     std::string name{};
     AABoundingBox aabb{};
-    bool hasVertexNormals{false};
 
     void refreshBoundingBox();
 

@@ -25,7 +25,7 @@ class ENGINE_API Camera
     Vector3 m_up;
     Vector3 m_upWorld;
 
-    Eigen::Vector2i m_viewportDim;
+    Eigen::Vector2i m_viewportDim = {1.0f, 1.0f};
     Eigen::Vector2i m_viewportPos = Eigen::Vector2i::Zero();
 
     void refreshPosition();

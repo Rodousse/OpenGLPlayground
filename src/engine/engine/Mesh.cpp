@@ -29,7 +29,6 @@ void Mesh::moveIntoThis(Mesh&& other) noexcept
     vertices = std::move(other.vertices);
     faces = std::move(other.faces);
     name = std::move(other.name);
-    hasVertexNormals = other.hasVertexNormals;
     aabb = other.aabb;
 }
 
