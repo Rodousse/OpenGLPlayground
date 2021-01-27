@@ -8,7 +8,6 @@ set(ENGINE_SRC
     engine/GLTexture2D.cpp
     engine/Mesh.cpp
     engine/PerspectiveCamera.cpp
-    engine/RenderDataManager.cpp
     )
 
 set(ENGINE_HEADERS
@@ -23,8 +22,6 @@ set(ENGINE_HEADERS
     engine/GLTexture2D.hpp
     engine/Mesh.hpp
     engine/PerspectiveCamera.hpp
-    engine/RenderData.hpp
-    engine/RenderDataManager.hpp
     engine/Scene.hpp
     )
 
