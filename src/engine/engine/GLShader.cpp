@@ -16,25 +16,25 @@ namespace engine
 {
 void GLShader::move(GLShader&& other) noexcept
 {
-    m_shaderContent.swap(other.m_shaderContent);
     m_shaderObject = other.m_shaderObject;
     other.m_shaderObject = 0;
 }
 
-GLShader::GLShader(const std::string& shaderPath, GLenum shaderType)
+GLShader::GLShader(const std::string& shaderPath, GLenum shaderType): m_shaderType(shaderType)
 {
     m_shaderObject = glCreateShader(shaderType);
-    m_shaderContent = ::loadShader(shaderPath);
+    const auto shaderContent = ::loadShader(shaderPath);
     if(m_shaderObject == 0 || !checkNoGLErrors())
     {
         throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Could not create shader object " +
                                  shaderEnumToString(shaderType) + "!");
     }
-    const GLchar* sourceContentPointer = m_shaderContent.data();
-    const GLint sourceContentSize = static_cast<GLint>(m_shaderContent.size());
+    const GLchar* sourceContentPointer = shaderContent.data();
+    const GLint sourceContentSize = static_cast<GLint>(shaderContent.size());
     glShaderSource(m_shaderObject, 1, &sourceContentPointer, &sourceContentSize);
     if(!checkNoGLErrors())
     {
+        glDeleteShader(m_shaderObject);
         throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Could not set shader source for " +
                                  shaderEnumToString(shaderType) + "!");
     }
@@ -52,6 +52,7 @@ GLShader::GLShader(const std::string& shaderPath, GLenum shaderType)
 
         spdlog::critical("{0} : \n {1}", shaderPath.data(), errorLog.data());
 
+        glDeleteShader(m_shaderObject);
         throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Shader compilation failed for " +
                                  shaderEnumToString(shaderType) + "!");
     }
@@ -70,10 +71,7 @@ GLShader& GLShader::operator=(GLShader&& other) noexcept
 
 GLShader::~GLShader()
 {
-    if(m_shaderObject != 0)
-    {
-        glDeleteShader(m_shaderObject);
-    }
+    glDeleteShader(m_shaderObject);
 }
 
 GLuint GLShader::id() const

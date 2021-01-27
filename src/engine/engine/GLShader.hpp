@@ -13,8 +13,8 @@ std::string ENGINE_API shaderEnumToString(GLenum value);
 ENGINE_API class GLShader : public GLObject
 {
   protected:
-    GLuint m_shaderObject = 0;
-    std::vector<char> m_shaderContent;
+    GLuint m_shaderObject{0};
+    GLenum m_shaderType;
 
     void move(GLShader&& other) noexcept;
 
