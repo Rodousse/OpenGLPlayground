@@ -5,7 +5,9 @@
 
 namespace engine
 {
-void ENGINE_API printGLError(
+void ENGINE_API enableDebugLayer();
+
+void ENGINE_API debugLayerCallback(
   GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
 void ENGINE_API flushGLErrors();

@@ -37,9 +37,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(engine::printGLError, nullptr);
+    engine::enableDebugLayer();
 
     engine::PipelineShaderPaths shaders{};
     shaders.fragmentShader = std::string(SHADER_PATH) + "/fragment.fs";

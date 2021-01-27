@@ -33,9 +33,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(engine::printGLError, nullptr);
+    engine::enableDebugLayer();
 
     engine::Scene scene{};
     if(!engine::IO::loadScene(MODEL_PATH, scene))

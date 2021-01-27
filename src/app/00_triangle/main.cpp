@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <engine/DataIO.hpp>
+#include <engine/GLErrorHandling.hpp>
 #include <iostream>
 #include <spdlog/spdlog.h>
 
@@ -31,6 +32,8 @@ int main(int argc, char* argv[])
         std::cerr << "ERROR: could not start GLEW" << std::endl;
         return 1;
     }
+
+    engine::enableDebugLayer();
 
     engine::PipelineShaderPaths shaders{};
     shaders.fragmentShader = std::string(SHADER_PATH) + "/fragment.fs";
