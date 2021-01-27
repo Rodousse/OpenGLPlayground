@@ -62,7 +62,7 @@ void GLTexture2D::setPixelData(GLint xOffset, GLint yOffset, GLenum format, GLen
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-GLuint GLTexture2D::id()
+GLuint GLTexture2D::id() const
 {
     return m_textureID;
 }

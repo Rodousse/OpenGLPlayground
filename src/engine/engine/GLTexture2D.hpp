@@ -37,7 +37,7 @@ class ENGINE_API GLTexture2D : public GLObject
     void setPixelData(GLenum format, GLenum type, const void* pixelData);
     void setPixelData(GLint xOffset, GLint yOffset, GLenum format, GLenum type, const void* pixelData);
 
-    GLuint id();
+    GLuint id() const;
     int width() const;
     int height() const;
 
