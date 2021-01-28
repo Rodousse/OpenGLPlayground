@@ -1,5 +1,7 @@
 #include "engine/GLTexture2D.hpp"
 
+#include "engine/GLErrorHandling.hpp"
+
 namespace engine
 {
 GLTexture2D::GLTexture2D(GLint internalFormat,
@@ -20,6 +22,11 @@ GLTexture2D::GLTexture2D(GLint internalFormat,
     glBindTexture(GL_TEXTURE_2D, m_textureID);
     {
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, pixelData);
+        if(!CHECK_NO_GL_ERROR)
+        {
+            glDeleteTextures(1, &m_textureID);
+            throw std::runtime_error("Could not create texture object");
+        }
         applySamplerParametersOnTexture(GL_TEXTURE_2D, samplerParams);
         applyTextureParameters(GL_TEXTURE_2D, texParams);
     }
@@ -37,6 +44,11 @@ GLTexture2D::GLTexture2D(GLint internalFormat,
     glBindTexture(GL_TEXTURE_2D, m_textureID);
     {
         glTexStorage2D(GL_TEXTURE_2D, 1, internalFormat, width, height);
+        if(!CHECK_NO_GL_ERROR)
+        {
+            glDeleteTextures(1, &m_textureID);
+            throw std::runtime_error("Could not create texture object");
+        }
         applySamplerParametersOnTexture(GL_TEXTURE_2D, samplerParams);
         applyTextureParameters(GL_TEXTURE_2D, texParams);
     }
@@ -58,6 +70,10 @@ void GLTexture2D::setPixelData(GLint xOffset, GLint yOffset, GLenum format, GLen
     glBindTexture(GL_TEXTURE_2D, m_textureID);
     {
         glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, m_width, m_height, format, type, pixelData);
+        if(!CHECK_NO_GL_ERROR)
+        {
+            throw std::runtime_error("Could not set the data for texture object");
+        }
     }
     glBindTexture(GL_TEXTURE_2D, 0);
 }
