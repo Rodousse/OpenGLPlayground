@@ -63,7 +63,7 @@ void GLProgram::compileAndLinkShadersToProgram(const PipelineShaderPaths& shader
         }
         const auto& newShader = m_shaders.emplace(shader.first, GLShader(*(shader.second), shader.first)).first->second;
         glAttachShader(m_program, newShader.id());
-        if(!checkNoGLErrors())
+        if(!CHECK_NO_GL_ERROR)
         {
             throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Can't attach shader " +
                                      shaderEnumToString(shader.first) + " to the program!");
@@ -71,7 +71,7 @@ void GLProgram::compileAndLinkShadersToProgram(const PipelineShaderPaths& shader
     }
 
     glLinkProgram(m_program);
-    if(!checkNoGLErrors())
+    if(!CHECK_NO_GL_ERROR)
     {
         throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Can't link shaders to program!");
     }

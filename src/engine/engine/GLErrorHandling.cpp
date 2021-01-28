@@ -5,13 +5,6 @@
 
 namespace engine
 {
-void enableDebugLayer()
-{
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(engine::debugLayerCallback, nullptr);
-}
-
 void debugLayerCallback(
   GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -29,9 +22,44 @@ void flushGLErrors()
     while(glGetError() != GL_NO_ERROR) {}
 }
 
-bool checkNoGLErrors()
+bool checkNoGLErrors(const char* file, const char* function, int line)
 {
-    return glGetError() == GL_NO_ERROR;
+    GLenum errorCode{};
+    while((errorCode = glGetError()) != GL_NO_ERROR)
+    {
+        switch(errorCode)
+        {
+            case GL_INVALID_ENUM:
+                spdlog::critical("[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_INVALID_ENUM");
+                return false;
+            case GL_INVALID_VALUE:
+                spdlog::critical("[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_INVALID_VALUE");
+                return false;
+            case GL_INVALID_OPERATION:
+                spdlog::critical("[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_INVALID_OPERATION");
+                return false;
+            case GL_STACK_OVERFLOW:
+                spdlog::critical("[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_STACK_OVERFLOW");
+                return false;
+            case GL_STACK_UNDERFLOW:
+                spdlog::critical("[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_STACK_UNDERFLOW");
+                return false;
+            case GL_OUT_OF_MEMORY:
+                spdlog::critical("[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_OUT_OF_MEMORY");
+                return false;
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                spdlog::critical(
+                  "[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_INVALID_FRAMEBUFFER_OPERATION");
+                return false;
+            case GL_CONTEXT_LOST:
+                spdlog::critical("[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_CONTEXT_LOST");
+                return false;
+            case GL_TABLE_TOO_LARGE:
+                spdlog::critical("[{0}], function : {1} l.{2} : {3}", file, function, line, "GL_TABLE_TOO_LARGE");
+                return false;
+        }
+    }
+    return true;
 }
 
 } // namespace engine

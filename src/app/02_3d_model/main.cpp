@@ -33,8 +33,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    engine::enableDebugLayer();
-
     engine::Scene scene{};
     if(!engine::IO::loadScene(MODEL_PATH, scene))
     {

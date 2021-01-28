@@ -24,7 +24,7 @@ GLShader::GLShader(const std::string& shaderPath, GLenum shaderType): m_shaderTy
 {
     m_shaderObject = glCreateShader(shaderType);
     const auto shaderContent = ::loadShader(shaderPath);
-    if(m_shaderObject == 0 || !checkNoGLErrors())
+    if(m_shaderObject == 0 || !CHECK_NO_GL_ERROR)
     {
         throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Could not create shader object " +
                                  shaderEnumToString(shaderType) + "!");
@@ -32,7 +32,7 @@ GLShader::GLShader(const std::string& shaderPath, GLenum shaderType): m_shaderTy
     const GLchar* sourceContentPointer = shaderContent.data();
     const GLint sourceContentSize = static_cast<GLint>(shaderContent.size());
     glShaderSource(m_shaderObject, 1, &sourceContentPointer, &sourceContentSize);
-    if(!checkNoGLErrors())
+    if(!CHECK_NO_GL_ERROR)
     {
         glDeleteShader(m_shaderObject);
         throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Could not set shader source for " +
@@ -42,7 +42,7 @@ GLShader::GLShader(const std::string& shaderPath, GLenum shaderType): m_shaderTy
     glCompileShader(m_shaderObject);
     GLint flags;
     glGetShaderiv(m_shaderObject, GL_COMPILE_STATUS, &flags);
-    if(!checkNoGLErrors() || flags == GL_FALSE)
+    if(!CHECK_NO_GL_ERROR || flags == GL_FALSE)
     {
         GLint maxLength = 0;
         glGetShaderiv(m_shaderObject, GL_INFO_LOG_LENGTH, &maxLength);

@@ -37,8 +37,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    engine::enableDebugLayer();
-
     engine::PipelineShaderPaths shaders{};
     shaders.fragmentShader = std::string(SHADER_PATH) + "/fragment.fs";
     shaders.vertexShader = std::string(SHADER_PATH) + "/vertex.vs";
