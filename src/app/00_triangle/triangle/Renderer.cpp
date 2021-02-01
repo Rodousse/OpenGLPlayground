@@ -3,6 +3,7 @@
 #include <Eigen/Dense>
 #include <GL/glew.h>
 #include <array>
+#include <engine/GLErrorHandling.hpp>
 
 void Renderer::createVaoVbo()
 {
@@ -47,6 +48,7 @@ void Renderer::render() const
     glBindVertexArray(0);
 
     glUseProgram(0);
+    THROW_IF_GL_ERROR;
 }
 
 Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths): engine::GLProgram(shaderPaths)

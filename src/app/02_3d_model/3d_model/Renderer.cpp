@@ -3,6 +3,7 @@
 #include <Eigen/Dense>
 #include <GL/glew.h>
 #include <array>
+#include <engine/GLErrorHandling.hpp>
 
 void Renderer::createVaoVboEbo(const engine::Scene& scene)
 {
@@ -43,6 +44,7 @@ void Renderer::createVaoVboEbo(const engine::Scene& scene)
     glUseProgram(m_program);
     m_PVMatID = glGetUniformLocation(m_program, "PV_mat");
     glUseProgram(0);
+    THROW_IF_GL_ERROR;
 }
 
 void Renderer::render() const
@@ -57,6 +59,7 @@ void Renderer::render() const
 
     glUseProgram(0);
     glDisable(GL_CULL_FACE);
+    THROW_IF_GL_ERROR;
 }
 
 Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths, const engine::Scene& scene):

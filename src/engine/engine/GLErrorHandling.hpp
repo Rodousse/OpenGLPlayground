@@ -2,6 +2,7 @@
 #include "EngineSymbols.h"
 
 #include <GL/glew.h>
+#include <exception>
 
 namespace engine
 {
@@ -15,3 +16,7 @@ bool ENGINE_API checkNoGLErrors(const char* file, const char* function, int line
 } // namespace engine
 
 #define CHECK_NO_GL_ERROR engine::checkNoGLErrors(__FILE__, __func__, __LINE__)
+
+#define THROW_IF_GL_ERROR \
+    if(!CHECK_NO_GL_ERROR) \
+        throw std::runtime_error("Bad opengGL call!");
