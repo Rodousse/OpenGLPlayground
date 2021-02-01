@@ -95,7 +95,7 @@ int GLTexture2D::height() const
 
 void applyTextureParameters(GLenum target, const TextureParameters& param)
 {
-    glTexParameterf(target, GL_TEXTURE_BASE_LEVEL, param.baseLevel);
+    glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, param.baseLevel);
     glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, param.maxLevel);
     glTexParameteri(target, GL_TEXTURE_SWIZZLE_B, param.swizzleB);
     glTexParameteri(target, GL_TEXTURE_MAX_LOD, param.swizzleG);
