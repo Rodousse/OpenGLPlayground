@@ -43,6 +43,7 @@ void Renderer::createVaoVboEbo(const engine::Scene& scene)
 
     glUseProgram(m_program);
     m_PVMatID = glGetUniformLocation(m_program, "PV_mat");
+    m_lightDirID = glGetUniformLocation(m_program, "lightDir");
     glUseProgram(0);
     THROW_IF_GL_ERROR;
 }
@@ -68,6 +69,11 @@ Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths, const engine:
     createVaoVboEbo(scene);
     const auto& viewport = m_camera->getViewportDimension();
     setViewport(viewport.x(), viewport.y());
+    setDirectionnalLightDir(Vector3::Identity());
+    glUseProgram(m_program);
+    const auto normalMatID = glGetUniformLocation(m_program, "normal_mat");
+    glUniformMatrix4fv(normalMatID, 1, GL_FALSE, m_camera->getView().inverse().transpose().eval().data());
+    glUseProgram(0);
 }
 
 Renderer::~Renderer()
@@ -85,5 +91,12 @@ void Renderer::setViewport(int width, int height)
     glViewport(0, 0, width, height);
     glUseProgram(m_program);
     glUniformMatrix4fv(m_PVMatID, 1, GL_FALSE, PV.eval().data());
+    glUseProgram(0);
+}
+
+void Renderer::setDirectionnalLightDir(const Vector3& dir)
+{
+    glUseProgram(m_program);
+    glUniform3fv(m_lightDirID, 1, dir.normalized().data());
     glUseProgram(0);
 }

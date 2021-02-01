@@ -11,6 +11,7 @@ class Renderer final : public engine::GLProgram
     GLuint m_vbo;
     GLuint m_ebo;
     GLuint m_PVMatID;
+    GLuint m_lightDirID;
     std::shared_ptr<engine::Camera> m_camera;
     uint32_t m_nbTriangles;
     void createVaoVboEbo(const engine::Scene& scene);
@@ -21,4 +22,5 @@ class Renderer final : public engine::GLProgram
     ~Renderer();
 
     void setViewport(int width, int height);
+    void setDirectionnalLightDir(const Vector3& dir);
 };

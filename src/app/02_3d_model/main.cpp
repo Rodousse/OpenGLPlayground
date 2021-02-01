@@ -44,18 +44,23 @@ int main(int argc, char* argv[])
     shaders.fragmentShader = std::string(SHADER_PATH) + "/fragment.fs";
     shaders.vertexShader = std::string(SHADER_PATH) + "/vertex.vs";
     Renderer renderer(shaders, scene);
+    const auto start = std::chrono::steady_clock::now();
 
     while(!glfwWindowShouldClose(window))
     {
         // update other events like input handling
         glfwPollEvents();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         {
             int width, height;
             glfwGetWindowSize(window, &width, &height);
             renderer.setViewport(width, height);
+
+            const auto now = std::chrono::steady_clock::now();
+            float diff = std::chrono::duration<float>(now - start).count();
+            renderer.setDirectionnalLightDir(Vector3{std::sin(diff), 0.0f, std::cos(diff)});
         }
 
         renderer.render();
