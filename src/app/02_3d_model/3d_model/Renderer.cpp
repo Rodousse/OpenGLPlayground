@@ -10,14 +10,14 @@ void Renderer::createVaoVboEbo(const engine::Scene& scene)
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER,
-                 scene.meshes[0]->vertices.size() * sizeof(scene.meshes[0]->vertices),
+                 scene.meshes[0]->vertices.size() * sizeof(scene.meshes[0]->vertices[0]),
                  scene.meshes[0]->vertices.data(),
                  GL_STATIC_DRAW);
 
     glGenBuffers(1, &m_ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 scene.meshes[0]->faces.size() * sizeof(scene.meshes[0]->faces),
+                 scene.meshes[0]->faces.size() * sizeof(scene.meshes[0]->faces[0]),
                  scene.meshes[0]->faces.data(),
                  GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
