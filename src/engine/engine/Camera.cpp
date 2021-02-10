@@ -10,7 +10,7 @@ namespace engine
 {
 void Camera::refreshPosition()
 {
-    m_view.block<3, 1>(0, 3) = Vector3{-m_right.dot(m_position), -m_up.dot(m_position), m_forward.dot(m_position)};
+    m_view.block<3, 1>(0, 3) = Vector3{-m_right.dot(m_position), -m_up.dot(m_position), -m_forward.dot(m_position)};
 }
 
 void Camera::refreshRotation()
@@ -30,12 +30,12 @@ void Camera::lookAt(const Vector3& position, const Vector3& center, const Vector
     m_upWorld = up.normalized();
 
     m_forward = (center - position).normalized();
-    m_right = m_forward.cross(m_upWorld).normalized();
-    m_up = m_right.cross(m_forward).normalized();
+    m_right = m_upWorld.cross(m_forward).normalized();
+    m_up = m_forward.cross(m_right).normalized();
 
     m_rotation.row(0) = m_right;
     m_rotation.row(1) = m_up;
-    m_rotation.row(2) = -m_forward;
+    m_rotation.row(2) = m_forward;
 
     refreshRotation();
     refreshPosition();
