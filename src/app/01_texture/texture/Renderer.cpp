@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <array>
 #include <engine/GLErrorHandling.hpp>
+#include <engine/GLTexture.hpp>
 
 void Renderer::createVaoVboEbo()
 {
@@ -54,17 +55,35 @@ void Renderer::createVaoVboEbo()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glUseProgram(m_program);
-    m_textureUniID = glGetUniformLocation(m_program, "textureSampler");
-    glUniform1i(m_textureUniID, 0);
+    m_texture.textureUniID = glGetUniformLocation(m_program, "textureSampler");
+    glUniform1i(m_texture.textureUniID, 0);
     glUseProgram(0);
     THROW_IF_GL_ERROR;
+}
+
+void Renderer::setDefaultTextureData()
+{
+    glGenTextures(1, &m_texture.textureID);
+    engine::SamplerParameters sampleParams{};
+    sampleParams.minFilter = GL_LINEAR;
+    glBindTexture(GL_TEXTURE_2D, m_texture.textureID);
+    {
+        glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, 1, 1);
+        if(!CHECK_NO_GL_ERROR)
+        {
+            glDeleteTextures(1, &m_texture.textureID);
+            throw std::runtime_error("Could not create texture object");
+        }
+        applySamplerParametersOnTexture(GL_TEXTURE_2D, sampleParams);
+        applyTextureParameters(GL_TEXTURE_2D, engine::TextureParameters{});
+    }
 }
 
 void Renderer::render() const
 {
     glUseProgram(m_program);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_texture->id());
+    glBindTexture(GL_TEXTURE_2D, m_texture.textureID);
     glBindVertexArray(m_vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
@@ -75,7 +94,6 @@ void Renderer::render() const
 
 Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths): engine::GLProgram(shaderPaths)
 {
-    m_texture = std::make_unique<engine::GLTexture2D>(GL_RGB8, 1, 1);
     createVaoVboEbo();
 }
 
@@ -85,25 +103,53 @@ Renderer::~Renderer()
     glDeleteBuffers(1, &m_vboUv);
     glDeleteBuffers(1, &m_ebo);
     glDeleteVertexArrays(1, &m_vao);
+    glDeleteTextures(1, &m_texture.textureID);
 }
 
 void Renderer::setTexture(const stbipp::Image& image)
 {
-    engine::SamplerParameters sampleParams{};
-    sampleParams.minFilter = GL_LINEAR;
-    if(image.width() != m_texture->width() || image.height() != m_texture->height())
+    const auto textureData = image.castData<stbipp::Color4uc>();
+    if(image.width() != m_texture.width || image.height() != m_texture.height)
     {
-        m_texture = std::make_unique<engine::GLTexture2D>(GL_RGB8,
-                                                          image.width(),
-                                                          image.height(),
-                                                          GL_RGBA,
-                                                          GL_UNSIGNED_BYTE,
-                                                          image.castData<stbipp::Color4uc>().data(),
-                                                          engine::TextureParameters{},
-                                                          sampleParams);
+        if(m_texture.textureID != 0)
+        {
+            glDeleteTextures(1, &m_texture.textureID);
+        }
+        glGenTextures(1, &m_texture.textureID);
+        glBindTexture(GL_TEXTURE_2D, m_texture.textureID);
+        {
+            glTexImage2D(GL_TEXTURE_2D,
+                         0,
+                         GL_RGB8,
+                         image.width(),
+                         image.height(),
+                         0,
+                         GL_RGBA,
+                         GL_UNSIGNED_BYTE,
+                         textureData.data());
+            if(!CHECK_NO_GL_ERROR)
+            {
+                throw std::runtime_error("Could not create texture object");
+            }
+            engine::SamplerParameters sampleParams{};
+            sampleParams.minFilter = GL_LINEAR;
+            applySamplerParametersOnTexture(GL_TEXTURE_2D, sampleParams);
+            applyTextureParameters(GL_TEXTURE_2D, engine::TextureParameters{});
+        }
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
-    else
+    else if(m_texture.textureID != 0)
     {
-        m_texture->setPixelData(GL_RGBA, GL_UNSIGNED_BYTE, image.castData<stbipp::Color4uc>().data());
+        glBindTexture(GL_TEXTURE_2D, m_texture.textureID);
+        {
+            glTexSubImage2D(
+              GL_TEXTURE_2D, 0, 0, 0, image.width(), image.height(), GL_RGBA, GL_UNSIGNED_BYTE, textureData.data());
+            if(!CHECK_NO_GL_ERROR)
+            {
+                throw std::runtime_error("Could not set the data for texture object");
+            }
+        }
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
+    THROW_IF_GL_ERROR;
 }

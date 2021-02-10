@@ -1,7 +1,6 @@
 #pragma once
 
 #include <engine/GLProgram.hpp>
-#include <engine/GLTexture2D.hpp>
 #include <memory>
 #include <stbipp/Image.hpp>
 
@@ -12,9 +11,16 @@ class Renderer final : public engine::GLProgram
     GLuint m_vboPos;
     GLuint m_vboUv;
     GLuint m_ebo;
-    std::unique_ptr<engine::GLTexture2D> m_texture;
-    GLuint m_textureUniID;
+
+    struct Texture2D
+    {
+        GLuint textureID;
+        GLuint textureUniID;
+        int width{0};
+        int height{0};
+    } m_texture;
     void createVaoVboEbo();
+    void setDefaultTextureData();
 
   public:
     void render() const;

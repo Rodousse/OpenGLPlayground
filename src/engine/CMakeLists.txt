@@ -3,9 +3,8 @@ set(ENGINE_SRC
     engine/DataIO.cpp
     engine/GLErrorHandling.cpp
     engine/GLProgram.cpp
-    engine/GLSampler.cpp
     engine/GLShader.cpp
-    engine/GLTexture2D.cpp
+    engine/GLTexture.cpp
     engine/Mesh.cpp
     engine/PerspectiveCamera.cpp
     )
@@ -17,9 +16,8 @@ set(ENGINE_HEADERS
     engine/GLErrorHandling.hpp
     engine/GLObject.hpp
     engine/GLProgram.hpp
-    engine/GLSampler.hpp
     engine/GLShader.hpp
-    engine/GLTexture2D.hpp
+    engine/GLTexture.hpp
     engine/Mesh.hpp
     engine/PerspectiveCamera.hpp
     engine/Scene.hpp
