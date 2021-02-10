@@ -70,10 +70,6 @@ Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths, const engine:
     const auto& viewport = m_camera->getViewportDimension();
     setViewport(viewport.x(), viewport.y());
     setDirectionnalLightDir(Vector3::Identity());
-    glUseProgram(m_program);
-    const auto normalMatID = glGetUniformLocation(m_program, "normal_mat");
-    glUniformMatrix4fv(normalMatID, 1, GL_FALSE, m_camera->getView().inverse().transpose().eval().data());
-    glUseProgram(0);
 }
 
 Renderer::~Renderer()
