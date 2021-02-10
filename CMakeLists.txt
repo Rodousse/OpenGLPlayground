@@ -7,6 +7,8 @@ project(OpenGLPlayground
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(SCENE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/scenes")
+set(TEXTURE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/textures")
 
 
 

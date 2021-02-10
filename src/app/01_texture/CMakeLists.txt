@@ -15,7 +15,7 @@ add_sample(01_texture
     HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
     DEFINITIONS
         -DSHADER_PATH="${CMAKE_CURRENT_SOURCE_DIR}/shaders"
-        -DTEXTURE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/texture.jpg"
-        -DTEXTURE2_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/texture2.jpg"
+        -DTEXTURE_PATH="${TEXTURE_PATH}/texture.jpg"
+        -DTEXTURE2_PATH="${TEXTURE_PATH}/texture2.jpg"
         ${IMGUI_COMPILE_FLAGS}
     )

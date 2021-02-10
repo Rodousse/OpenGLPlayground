@@ -15,6 +15,6 @@ add_sample(02_3d_model
     HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
     DEFINITIONS
         -DSHADER_PATH="${CMAKE_CURRENT_SOURCE_DIR}/shaders"
-        -DMODEL_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/sphere.fbx"
+        -DMODEL_PATH="${SCENE_PATH}/sphereOnPlane.fbx"
         ${IMGUI_COMPILE_FLAGS}
     )
