@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 
             const auto now = std::chrono::steady_clock::now();
             float diff = std::chrono::duration<float>(now - start).count();
-            renderer.setDirectionnalLightDir(Vector3{std::sin(diff), 0.0f, std::cos(diff)});
+            renderer.setDirectionnalLightDir(Vector3{std::sin(diff), 0.2f, std::cos(diff)});
         }
 
         renderer.render();
