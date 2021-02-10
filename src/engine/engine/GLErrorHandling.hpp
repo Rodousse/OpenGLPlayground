@@ -19,4 +19,7 @@ bool ENGINE_API checkNoGLErrors(const char* file, const char* function, int line
 
 #define THROW_IF_GL_ERROR \
     if(!CHECK_NO_GL_ERROR) \
-        throw std::runtime_error("Bad opengGL call!");
+    { \
+        engine::flushGLErrors(); \
+        throw std::runtime_error("Bad opengGL call!"); \
+    }
