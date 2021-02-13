@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <chrono>
 #include <engine/DataIO.hpp>
 #include <engine/GLErrorHandling.hpp>
 #include <imgui.h>
@@ -63,6 +64,9 @@ int main(int argc, char* argv[])
 
     Renderer::LightMaterial lightMat{};
     lightMat.lightPosition = Vector3{200.0f, 100.0f, 0.0f};
+
+    const auto start = std::chrono::steady_clock::now();
+
     while(!glfwWindowShouldClose(window))
     {
         // update other events like input handling
@@ -86,10 +90,11 @@ int main(int argc, char* argv[])
         ImGui::Begin("Parameters");
         {
             ImGui::ColorEdit3("Material Diffuse Color", lightMat.materialColor.data());
-            ImGui::SliderFloat("Material Specularity", &lightMat.materialSpecularity, 0.0, 600, "%.0f");
+            ImGui::SliderFloat("Material Specularity", &lightMat.materialSpecularity, 1.0, 600, "%.0f");
             ImGui::ColorEdit3("Light Diffuse Color", lightMat.lightDiffuseColor.data());
             ImGui::ColorEdit3("Light Specular Color", lightMat.lightSpecularColor.data());
             ImGui::ColorEdit3("Light Ambient Color", lightMat.lightAmbientColor.data());
+            ImGui::SliderFloat("Light Intensity", &lightMat.lightIntensity, 1.0, 10000, "%.0f");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
                         1000.0f / ImGui::GetIO().Framerate,
                         ImGui::GetIO().Framerate);
@@ -99,6 +104,9 @@ int main(int argc, char* argv[])
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+        const auto now = std::chrono::steady_clock::now();
+        float diff = std::chrono::duration<float>(now - start).count() * 2.0f;
+        lightMat.lightPosition = Vector3{200.0f * std::sin(diff), 50.0f * std::sin(diff * 2.0f), 200 * std::cos(diff)};
         renderer.setLightMaterial(lightMat);
 
         glfwSwapBuffers(window);

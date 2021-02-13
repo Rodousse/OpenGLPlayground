@@ -10,15 +10,14 @@ class Renderer final : public engine::GLProgram
     struct LightMaterial
     {
         Vector3 lightPosition{0.0f, 0.0f, 0.0f};
-        float dummy_1;
-        Vector3 lightDiffuseColor{0.0f, 0.0f, 0.0f};
-        float dummy_2;
+        float lightIntensity{1000.0f};
+        Vector3 lightDiffuseColor{1.0f, 1.0f, 1.0f};
+        float materialSpecularity{5.0f};
         Vector3 lightAmbientColor{0.0f, 0.0f, 0.0f};
-        float dummy_3;
-        Vector3 lightSpecularColor{0.0f, 0.0f, 0.0f};
-        float dummy_4;
+        float _1;
+        Vector3 lightSpecularColor{1.0f, 1.0f, 1.0f};
+        float _2;
         Vector3 materialColor{1.0f, 1.0f, 1.0f};
-        float materialSpecularity{2.0f};
     };
     void render() const;
     Renderer(const engine::PipelineShaderPaths& shaderPaths, const engine::Scene& scene);

@@ -14,5 +14,6 @@ void main() {
   gl_Position = PV_mat * vec4(position, 1.0f);
   vertNormal = normal;
   vertPosition = position;
-  camPosition = vec3(VI_mat * vec4(vec3(0.0f), 1.0f));
+  vec4 camPositionW = VI_mat * vec4(vec3(0.0f), 1.0f);
+  camPosition = vec3(camPositionW / camPositionW.w);
 }
