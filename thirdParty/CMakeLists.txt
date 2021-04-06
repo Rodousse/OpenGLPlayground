@@ -64,7 +64,7 @@ if(BUILD_GLEW_CMAKE)
     endif()
     ExternalProject_Add(glew-cmake
         GIT_REPOSITORY "https://github.com/Perlmint/glew-cmake.git"
-        GIT_TAG "e34677f"
+        GIT_TAG "glew-cmake-2.2.0"
         BUILD_IN_SOURCE 0
         INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
         CMAKE_ARGS ${CMAKE_GENERIC_OPTIONS} -Dglew-cmake_BUILD_SHARED=${BUILD_SHARED_LIBS} -Dglew-cmake_BUILD_STATIC=${GLEW_BUILD_STATIC} -DONLY_LIBS=ON
