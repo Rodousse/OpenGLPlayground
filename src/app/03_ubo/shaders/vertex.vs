@@ -15,5 +15,5 @@ void main() {
   vertNormal = normal;
   vertPosition = position;
   vec4 camPositionW = VI_mat * vec4(vec3(0.0f), 1.0f);
-  camPosition = vec3(camPositionW / camPositionW.w);
+  camPosition = vec3(camPositionW);
 }
