@@ -1,5 +1,6 @@
 # OpenGLPlayground
 
+OpengGLPlayground has no ambitions except to be a fun playground (as you may have understood) where I experiment with various features of openGL and realtime rendering cool stuff.
 
 ## Dependencies
 
@@ -35,3 +36,29 @@ cd build
 cmake -DCMAKE_PREFIX_PATH="thirdParty/install/path/" ..
 make
 ```
+
+## Applications
+
+### Triangle
+
+The famous triangle as a first application
+
+![](resources/github/00_triangle.png)
+
+### Texture
+
+Texture sampler properties and texture memory allocation
+
+![](resources/github/01_texture.png)
+
+### 3D Model
+
+3D model rendering of a scene, with a very simple shading (normal.dot(dir) with dir a uniform vec3)
+
+![](resources/github/02_3d_model.png)
+
+### UBO
+
+Again, 3D rendering of a scene, with this time a phong illumination. The parameters of the phong material and the light material are passed using a uniform buffer object.
+
+![](resources/github/03_ubo.png)

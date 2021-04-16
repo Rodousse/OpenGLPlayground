@@ -33,7 +33,7 @@ fetch_imgui_target()
 
 
 if(BUILD_SHARED_LIBS)
-     add_library(GLEW::GLEW ALIAS libglew_static)
+    add_library(GLEW::GLEW ALIAS libglew_static)
 else()
     add_library(GLEW::GLEW ALIAS libglew_shared)
 endif()
