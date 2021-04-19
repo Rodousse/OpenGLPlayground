@@ -62,3 +62,9 @@ Texture sampler properties and texture memory allocation
 Again, 3D rendering of a scene, with this time a phong illumination. The parameters of the phong material and the light material are passed using a uniform buffer object.
 
 ![](resources/github/03_ubo.png)
+
+### FBO
+
+It may look quiet similar to the previous scene, but this application is using deferred rendering instead of forward rendering. Exercice using the framebuffer objects, stencil tests, and blitframebuffer (not optimal at all, could have used a pass through pipeline, but we can't say this application is resource consuming....)
+
+![](resources/github/04_fbo.png)
