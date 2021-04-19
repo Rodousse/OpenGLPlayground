@@ -3,7 +3,7 @@
 #include "engine/CommonTypes.hpp"
 #include "engine/GLObject.hpp"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 namespace engine
 {
