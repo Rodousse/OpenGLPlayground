@@ -11,9 +11,9 @@ namespace engine
 struct ENGINE_API PipelineShaderPaths
 {
     std::string vertexShader;
-    std::string geometryShader;       /// Unsupported
-    std::string tessControlShader;    /// Unsupported
-    std::string tessEvaluationShader; /// Unsupported
+    std::string geometryShader; /// Unsupported
+    std::string tessControlShader;
+    std::string tessEvaluationShader;
     std::string fragmentShader;
 };
 

@@ -48,6 +48,14 @@ void GLProgram::compileAndLinkShadersToProgram(const PipelineShaderPaths& shader
     }
     std::unordered_map<GLenum, const std::string*> shaders = {{GL_VERTEX_SHADER, &shaderPaths.vertexShader},
                                                               {GL_FRAGMENT_SHADER, &shaderPaths.fragmentShader}};
+    if(!shaderPaths.tessControlShader.empty())
+    {
+        shaders.insert({GL_TESS_CONTROL_SHADER, &shaderPaths.tessControlShader});
+    }
+    if(!shaderPaths.tessEvaluationShader.empty())
+    {
+        shaders.insert({GL_TESS_EVALUATION_SHADER, &shaderPaths.tessEvaluationShader});
+    }
 
     m_program = glCreateProgram();
     if(m_program == 0)
