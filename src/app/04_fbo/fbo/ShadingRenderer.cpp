@@ -27,7 +27,6 @@ void ShadingRenderer::render(const GBufferTextures& targets) const
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, getAttachmentTextureFromGBufferTextures(targets, GBufferAttachment::Normal));
     glBindVertexArray(m_vao);
-    glBindVertexArray(m_vao);
     glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 

@@ -2,14 +2,20 @@
 
 layout (vertices = 3) out;
 
-in vec3 tesControlNormal[];
+in vec3 tesControlNormalDisplacement[];
+in vec2 tesControlUv[];
+in mat3 tesControlTBN[];
 
-out vec3 tesEvalNormal[];
+out vec3 tesEvalNormalDisplacement[];
+out vec2 tesEvalUv[];
+out mat3 tesEvalTBN[];
 
 
 void main()
 {
-  tesEvalNormal[gl_InvocationID] = tesControlNormal[gl_InvocationID];
+  tesEvalNormalDisplacement[gl_InvocationID] = tesControlNormalDisplacement[gl_InvocationID];
+  tesEvalUv[gl_InvocationID] = tesControlUv[gl_InvocationID];
+  tesEvalTBN[gl_InvocationID] = tesControlTBN[gl_InvocationID];
   gl_TessLevelOuter[0] = 7;
   gl_TessLevelOuter[1] = 7;
   gl_TessLevelOuter[2] = 7;

@@ -1,5 +1,7 @@
 #include "engine/DataIO.hpp"
 
+#include "engine/CommonTypes.hpp"
+#include "engine/Mesh.hpp"
 #include "engine/PerspectiveCamera.hpp"
 
 #include <assimp/Importer.hpp>
@@ -15,7 +17,8 @@ namespace IO
 bool loadScene(const std::string& path, Scene& scene)
 {
     Assimp::Importer importer{};
-    const auto* aiScene = importer.ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_PreTransformVertices);
+    const auto* aiScene = importer.ReadFile(
+      path.c_str(), aiProcess_Triangulate | aiProcess_PreTransformVertices | aiProcess_CalcTangentSpace);
 
     if(!aiScene)
     {
@@ -58,6 +61,14 @@ bool loadScene(const std::string& path, Scene& scene)
                     const auto aiUV = aiMesh->mTextureCoords[0][vertexIndex];
                     vertex.uv = {aiUV.x, aiUV.y};
                 }
+
+                if(aiMesh->HasTangentsAndBitangents())
+                {
+                    const auto aiTangent = aiMesh->mTangents[vertexIndex];
+                    vertex.tangent = {aiTangent.x, aiTangent.y, aiTangent.z};
+                    const auto aiBitangent = aiMesh->mBitangents[vertexIndex];
+                    vertex.bitangent = {aiBitangent.x, aiBitangent.y, aiBitangent.z};
+                }
                 ++vertexIndex;
             }
 
@@ -78,11 +89,21 @@ bool loadScene(const std::string& path, Scene& scene)
             {
                 for(auto& face: mesh->faces)
                 {
-                    const auto& ab = (mesh->vertices[face[1]].pos - mesh->vertices[face[0]].pos);
-                    const auto& ac = (mesh->vertices[face[2]].pos - mesh->vertices[face[0]].pos);
+                    const auto ab = (mesh->vertices[face[1]].pos - mesh->vertices[face[0]].pos);
+                    const auto ac = (mesh->vertices[face[2]].pos - mesh->vertices[face[0]].pos);
 
                     mesh->vertices[face[0]].normal = mesh->vertices[face[1]].normal = mesh->vertices[face[2]].normal =
                       ab.cross(ac).normalized();
+                    if(aiMesh->HasTextureCoords(0))
+                    {
+                        const auto uv0 = (mesh->vertices[face[1]].uv - mesh->vertices[face[0]].uv);
+                        const auto uv1 = (mesh->vertices[face[2]].uv - mesh->vertices[face[0]].uv);
+                        const auto r = Floating(1.0) / (uv0.x() * uv1.y() - uv0.y() * uv1.x());
+                        mesh->vertices[face[0]].tangent = mesh->vertices[face[1]].tangent =
+                          mesh->vertices[face[2]].tangent = (ab * uv1.y() - ac * uv0.y()) * r;
+                        mesh->vertices[face[0]].bitangent = mesh->vertices[face[1]].bitangent =
+                          mesh->vertices[face[2]].bitangent = (ac * uv0.x() - ab * uv1.x()) * r;
+                    }
                 }
             }
             mesh->refreshBoundingBox();
@@ -115,8 +136,6 @@ bool loadScene(const std::string& path, Scene& scene)
             }
 
             aiVector3D position = cameraTransform * aiCamera->mPosition;
-            // camera->setPosition({aiCamera->mPosition.x, aiCamera->mPosition.y, aiCamera->mPosition.z});
-            // camera->setPosition({position.x, position.y, position.z});
             camera->setNearClipPlane(aiCamera->mClipPlaneNear);
             camera->setFarClipPlane(aiCamera->mClipPlaneFar);
 

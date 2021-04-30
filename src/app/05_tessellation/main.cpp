@@ -68,13 +68,14 @@ int main(int argc, char* argv[])
     const auto start = std::chrono::steady_clock::now();
 
     bool drawLines{false};
+    float displacementAmplitude{10.0f};
     while(!glfwWindowShouldClose(window))
     {
         // update other events like input handling
         glfwPollEvents();
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         {
             engine::Viewport viewport{};
             glfwGetWindowSize(window, &viewport.width, &viewport.height);
@@ -94,7 +95,9 @@ int main(int argc, char* argv[])
         ImGui::Begin("Parameters");
         {
             ImGui::Checkbox("GL_FILL/GL_LINE", &drawLines);
+            ImGui::SliderFloat("Displacement Amplitude", &displacementAmplitude, -100, 100, "%.0f");
             renderer.setPolygonMode(drawLines ? GL_LINE : GL_FILL);
+            renderer.setDisplacementAmplitude(displacementAmplitude);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
                         1000.0f / ImGui::GetIO().Framerate,
                         ImGui::GetIO().Framerate);

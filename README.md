@@ -68,3 +68,9 @@ Again, 3D rendering of a scene, with this time a phong illumination. The paramet
 It may look quiet similar to the previous scene, but this application is using deferred rendering instead of forward rendering. Exercice using the framebuffer objects, stencil tests, and blitframebuffer (not optimal at all, could have used a pass through pipeline, but we can't say this application is resource consuming....)
 
 ![](resources/github/04_fbo.png)
+
+### Tessellation (WIP)
+
+Add some tessellation to the scene, and displacement according to a reconstructed material obtained with photogrammetry. On top of that we add the normal perturbation according to the normal map which gives us this nice result.
+
+![](resources/github/05_tessellation.png)

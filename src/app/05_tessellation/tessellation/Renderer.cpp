@@ -1,6 +1,11 @@
 #include "tessellation/Renderer.hpp"
 
-#include "engine/Viewport.hpp"
+#include "engine/CommonTypes.hpp"
+#include "engine/GLTexture.hpp"
+#include "stbipp/Color.hpp"
+#include "stbipp/Image.hpp"
+#include "stbipp/ImageFormat.hpp"
+#include "stbipp/ImageImporter.hpp"
 
 #include <Eigen/Dense>
 #include <GL/glew.h>
@@ -36,28 +41,100 @@ void Renderer::createVaoVboEbo(const engine::Scene& scene)
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(
               1, 3, GL_FLOAT, GL_FALSE, sizeof(engine::Vertex), (void*)offsetof(engine::Vertex, normal));
+            // UV
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(
+              2, 2, GL_FLOAT, GL_FALSE, sizeof(engine::Vertex), (void*)offsetof(engine::Vertex, uv));
+            // tangent
+            glEnableVertexAttribArray(3);
+            glVertexAttribPointer(
+              3, 3, GL_FLOAT, GL_FALSE, sizeof(engine::Vertex), (void*)offsetof(engine::Vertex, tangent));
+            // cotangent
+            glEnableVertexAttribArray(4);
+            glVertexAttribPointer(
+              4, 3, GL_FLOAT, GL_FALSE, sizeof(engine::Vertex), (void*)offsetof(engine::Vertex, bitangent));
         }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
     }
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    THROW_IF_GL_ERROR;
 
     glUseProgram(m_program);
     m_PVMatID = glGetUniformLocation(m_program, "PV_mat");
     m_lightDirID = glGetUniformLocation(m_program, "lightDir");
+    const auto heightMapID = glGetUniformLocation(m_program, "heightMap");
+    glUniform1i(heightMapID, 0);
+    const auto normalMapID = glGetUniformLocation(m_program, "normalMap");
+    glUniform1i(normalMapID, 1);
+    m_displacementAmplitudeID = glGetUniformLocation(m_program, "displacementAmplitude");
+    glUniform1f(m_displacementAmplitudeID, 10.0f);
     glUseProgram(0);
     THROW_IF_GL_ERROR;
+}
+void Renderer::createTextures(const DisplacementMaps& maps)
+{
+    engine::SamplerParameters sampleParams{};
+    sampleParams.minFilter = GL_LINEAR;
+    engine::TextureParameters textureParams{};
+    // [0] height, [1] normal
+    std::array<GLuint, 2> textures{};
+    glGenTextures(2, textures.data());
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+    {
+        stbipp::Image textureData{};
+        stbipp::loadImage(maps.height, textureData, stbipp::ImageFormat::LUM8);
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     GL_R8,
+                     textureData.width(),
+                     textureData.height(),
+                     0,
+                     GL_RED,
+                     GL_UNSIGNED_BYTE,
+                     textureData.castData<stbipp::Coloruc>().data());
+        THROW_IF_GL_ERROR;
+        applySamplerParametersOnTexture(GL_TEXTURE_2D, sampleParams);
+        applyTextureParameters(GL_TEXTURE_2D, textureParams);
+    }
+    THROW_IF_GL_ERROR;
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+    {
+        stbipp::Image textureData{};
+        stbipp::loadImage(maps.normal, textureData, stbipp::ImageFormat::RGB8);
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     GL_RGB8,
+                     textureData.width(),
+                     textureData.height(),
+                     0,
+                     GL_RGB,
+                     GL_UNSIGNED_BYTE,
+                     textureData.castData<stbipp::Color3uc>().data());
+        applySamplerParametersOnTexture(GL_TEXTURE_2D, sampleParams);
+        applyTextureParameters(GL_TEXTURE_2D, textureParams);
+    }
+    THROW_IF_GL_ERROR;
+    glBindTexture(GL_TEXTURE_2D, 0);
+    m_heightTexture = textures[0];
+    m_normalTexture = textures[1];
+    if(!CHECK_NO_GL_ERROR)
+    {
+        throw std::runtime_error("Could not create texture object");
+    }
 }
 
 void Renderer::render() const
 {
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CW);
-    //    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     glUseProgram(m_program);
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_heightTexture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_normalTexture);
     glBindVertexArray(m_vao);
     glDrawElements(GL_PATCHES, m_nbTriangles, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
@@ -74,6 +151,7 @@ Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths,
   engine::GLProgram(shaderPaths), m_camera(scene.cameras[0]), m_nbTriangles(scene.meshes[0]->faces.size() * 3)
 {
     createVaoVboEbo(scene);
+    createTextures(maps);
     const auto& viewport = m_camera->getViewportDimension();
     setViewport({0, 0, viewport.x(), viewport.y()});
     setDirectionnalLightDir(Vector3::Identity());
@@ -83,6 +161,8 @@ Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths,
 
 Renderer::~Renderer()
 {
+    std::array<GLuint, 2> texs{{m_heightTexture, m_normalTexture}};
+    glDeleteTextures(2, texs.data());
     glDeleteBuffers(1, &m_vbo);
     glDeleteBuffers(1, &m_ebo);
     glDeleteVertexArrays(1, &m_vao);
@@ -114,4 +194,10 @@ void Renderer::setDirectionnalLightDir(const Vector3& dir)
 void Renderer::setPolygonMode(GLenum mode)
 {
     glPolygonMode(GL_FRONT, mode);
+}
+void Renderer::setDisplacementAmplitude(float amplitude)
+{
+    glUseProgram(m_program);
+    glUniform1f(m_displacementAmplitudeID, amplitude);
+    glUseProgram(0);
 }

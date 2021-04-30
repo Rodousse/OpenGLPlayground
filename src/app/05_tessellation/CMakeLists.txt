@@ -11,11 +11,11 @@ set(SAMPLE_SHADERS
 
 add_sample(05_tessellation
     SOURCES ${SAMPLE_SOURCES} ${SAMPLE_HEADERS} ${SAMPLE_SHADERS}
-    LINK glfw engine imgui
+    LINK glfw engine imgui Stbipp::Stbipp
     HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
     DEFINITIONS
         -DSHADER_PATH="${CMAKE_CURRENT_SOURCE_DIR}/shaders"
-        -DMODEL_PATH="${SCENE_PATH}/sphereOnPlane.fbx"
+        -DMODEL_PATH="${SCENE_PATH}/sphereOnPlane2.fbx"
         -DMATERIAL_PATH="${MATERIAL_PATH}/stone"
         ${IMGUI_COMPILE_FLAGS}
     )
