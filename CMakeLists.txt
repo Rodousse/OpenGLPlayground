@@ -22,6 +22,9 @@ set(GENERATED_DIR "${CMAKE_BINARY_DIR}/generated")
 message(STATUS "Generated files goes in : ${GENERATED_DIR}")
 file(MAKE_DIRECTORY ${GENERATED_DIR})
 
+if(NOT BUILD_SHARED_LIBS)
+  set(GLEW_USE_STATIC_LIBS)
+endif()
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
@@ -33,11 +36,6 @@ find_package(Eigen3 REQUIRED)
 fetch_imgui_target()
 
 
-if(BUILD_SHARED_LIBS)
-    add_library(GLEW::GLEW ALIAS libglew_static)
-else()
-    add_library(GLEW::GLEW ALIAS libglew_shared)
-endif()
 
 add_subdirectory(src/engine)
 add_subdirectory(src/app)

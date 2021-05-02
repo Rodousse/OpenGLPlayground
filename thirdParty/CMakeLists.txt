@@ -8,7 +8,7 @@ option(BUILD_ASSIMP "Build the library assimp" ON)
 option(BUILD_EIGEN "Build the library eigen" ON)
 option(BUILD_STBIPP "Build the library STBIPP" ON)
 option(BUILD_GLFW "Build the library GLFW" ON)
-option(BUILD_GLEW_CMAKE "Build the library GLEW-CMake" ON)
+option(BUILD_GLEW "Build the library GLEW" ON)
 option(BUILD_SPDLOG "Build the library spdlog" ON)
 
 include (ExternalProject)
@@ -56,23 +56,17 @@ if(BUILD_GLFW)
         )
 endif()
 
-if(BUILD_GLEW_CMAKE)
-
-    set(GLEW_BUILD_STATIC TRUE)
-    if(BUILD_SHARED_LIBS)
-        set(GLEW_BUILD_STATIC FALSE)
-    endif()
-    ExternalProject_Add(glew-cmake
-        GIT_REPOSITORY "https://github.com/Perlmint/glew-cmake.git"
-        GIT_TAG "glew-cmake-2.2.0"
+if(BUILD_GLEW)
+    ExternalProject_Add(glew
+        URL "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip"
+        SOURCE_SUBDIR "build/cmake"
         BUILD_IN_SOURCE 0
         INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
-        CMAKE_ARGS ${CMAKE_GENERIC_OPTIONS} -Dglew-cmake_BUILD_SHARED=${BUILD_SHARED_LIBS} -Dglew-cmake_BUILD_STATIC=${GLEW_BUILD_STATIC} -DONLY_LIBS=ON
+        CMAKE_ARGS ${CMAKE_GENERIC_OPTIONS} -DBUILD_UTILS:BOOL=OFF
         )
 endif()
 
 if(BUILD_SPDLOG)
-
     ExternalProject_Add(spdlog
         GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
         GIT_TAG "v1.8.2"
