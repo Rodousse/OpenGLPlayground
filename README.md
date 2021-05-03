@@ -11,7 +11,7 @@ This project uses different dependencies:
 - [Stbipp](https://github.com/Rodousse/stbipp): Image I/O
 - [glfw](https://github.com/glfw/glfw.git): Window and context provider
 - [Flix01/imgui](https://github.com/Flix01/imgui.git): Imgui fork with an additionnal file browser 
-- [glew-cmake](https://github.com/Perlmint/glew-cmake.git): OpenGL extension wrangler
+- [glew](https://github.com/nigels-com/glew): OpenGL extension wrangler
 - [spdlog](https://github.com/gabime/spdlog.git): Log system
 
 ---
