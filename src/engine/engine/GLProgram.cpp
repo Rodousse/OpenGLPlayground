@@ -38,24 +38,16 @@ GLuint GLProgram::id() const
 
 void GLProgram::compileAndLinkShadersToProgram(const PipelineShaderPaths& shaderPaths)
 {
-    if(shaderPaths.fragmentShader.empty())
-    {
-        throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Fragment shader has no path set!");
-    }
     if(shaderPaths.vertexShader.empty())
     {
         throw std::runtime_error("[" + std::string(__FUNCTION__) + "]: Vertex shader has no path set!");
     }
-    std::unordered_map<GLenum, const std::string*> shaders = {{GL_VERTEX_SHADER, &shaderPaths.vertexShader},
-                                                              {GL_FRAGMENT_SHADER, &shaderPaths.fragmentShader}};
-    if(!shaderPaths.tessControlShader.empty())
-    {
-        shaders.insert({GL_TESS_CONTROL_SHADER, &shaderPaths.tessControlShader});
-    }
-    if(!shaderPaths.tessEvaluationShader.empty())
-    {
-        shaders.insert({GL_TESS_EVALUATION_SHADER, &shaderPaths.tessEvaluationShader});
-    }
+    std::unordered_map<GLenum, const std::string*> shaders = {
+      {GL_VERTEX_SHADER, &shaderPaths.vertexShader},
+      {GL_GEOMETRY_SHADER, &shaderPaths.geometryShader},
+      {GL_TESS_CONTROL_SHADER, &shaderPaths.tessControlShader},
+      {GL_TESS_EVALUATION_SHADER, &shaderPaths.tessEvaluationShader},
+      {GL_FRAGMENT_SHADER, &shaderPaths.fragmentShader}};
 
     m_program = glCreateProgram();
     if(m_program == 0)

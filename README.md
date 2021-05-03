@@ -69,7 +69,7 @@ It may look quiet similar to the previous scene, but this application is using d
 
 ![](resources/github/04_fbo.png)
 
-### Tessellation (WIP)
+### Tessellation
 
 Add some tessellation to the scene, and displacement according to a reconstructed material obtained with photogrammetry. On top of that we add the normal perturbation according to the normal map which gives us this nice result.
 

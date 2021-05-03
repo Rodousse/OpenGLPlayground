@@ -7,7 +7,10 @@ set(SAMPLE_HEADERS
 
 set(SAMPLE_SHADERS
     shaders/vertex.vs
-    shaders/fragment.fs)
+    shaders/fragment.fs
+    shaders/tesEval.tese
+    shaders/tesControl.tesc
+    )
 
 add_sample(05_tessellation
     SOURCES ${SAMPLE_SOURCES} ${SAMPLE_HEADERS} ${SAMPLE_SHADERS}

@@ -57,9 +57,6 @@ int main(int argc, char* argv[])
     }
     scene.cameras[0]->setViewportDimensions({1024, 720});
 
-    engine::PipelineShaderPaths shaders{};
-    shaders.fragmentShader = std::string(SHADER_PATH) + "/fragment.fs";
-    shaders.vertexShader = std::string(SHADER_PATH) + "/vertex.vs";
     Renderer renderer(scene);
 
     LightMaterial lightMat{};
