@@ -62,8 +62,9 @@ int main(int argc, char* argv[])
     shaders.vertexShader = std::string(SHADER_PATH) + "/vertex.vs";
     shaders.tessControlShader = std::string(SHADER_PATH) + "/tesControl.tesc";
     shaders.tessEvaluationShader = std::string(SHADER_PATH) + "/tesEval.tese";
-    Renderer::DisplacementMaps maps{std::string(MATERIAL_PATH) + "/Displacement.jpg",
-                                    std::string(MATERIAL_PATH) + "/Normal.jpg"};
+    Renderer::MaterialMaps maps{std::string(MATERIAL_PATH) + "/Color.jpg",
+                                std::string(MATERIAL_PATH) + "/Displacement.jpg",
+                                std::string(MATERIAL_PATH) + "/Normal.jpg"};
     Renderer renderer(shaders, scene, maps);
     const auto start = std::chrono::steady_clock::now();
 

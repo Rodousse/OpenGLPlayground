@@ -67,19 +67,21 @@ void Renderer::createVaoVboEbo(const engine::Scene& scene)
     glUniform1i(heightMapID, 0);
     const auto normalMapID = glGetUniformLocation(m_program, "normalMap");
     glUniform1i(normalMapID, 1);
+    const auto diffuseMapID = glGetUniformLocation(m_program, "diffuseMap");
+    glUniform1i(diffuseMapID, 2);
     m_displacementAmplitudeID = glGetUniformLocation(m_program, "displacementAmplitude");
     glUniform1f(m_displacementAmplitudeID, 10.0f);
     glUseProgram(0);
     THROW_IF_GL_ERROR;
 }
-void Renderer::createTextures(const DisplacementMaps& maps)
+void Renderer::createTextures(const MaterialMaps& maps)
 {
     engine::SamplerParameters sampleParams{};
     sampleParams.minFilter = GL_LINEAR;
     engine::TextureParameters textureParams{};
-    // [0] height, [1] normal
-    std::array<GLuint, 2> textures{};
-    glGenTextures(2, textures.data());
+    // [0] height, [1] normal, [2] diffuse
+    std::array<GLuint, 3> textures{};
+    glGenTextures(textures.size(), textures.data());
     glBindTexture(GL_TEXTURE_2D, textures[0]);
     {
         stbipp::Image textureData{};
@@ -93,11 +95,9 @@ void Renderer::createTextures(const DisplacementMaps& maps)
                      GL_RED,
                      GL_UNSIGNED_BYTE,
                      textureData.castData<stbipp::Coloruc>().data());
-        THROW_IF_GL_ERROR;
         applySamplerParametersOnTexture(GL_TEXTURE_2D, sampleParams);
         applyTextureParameters(GL_TEXTURE_2D, textureParams);
     }
-    THROW_IF_GL_ERROR;
     glBindTexture(GL_TEXTURE_2D, textures[1]);
     {
         stbipp::Image textureData{};
@@ -114,10 +114,26 @@ void Renderer::createTextures(const DisplacementMaps& maps)
         applySamplerParametersOnTexture(GL_TEXTURE_2D, sampleParams);
         applyTextureParameters(GL_TEXTURE_2D, textureParams);
     }
-    THROW_IF_GL_ERROR;
+    glBindTexture(GL_TEXTURE_2D, textures[2]);
+    {
+        stbipp::Image textureData{};
+        stbipp::loadImage(maps.color, textureData, stbipp::ImageFormat::RGB8);
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     GL_RGB8,
+                     textureData.width(),
+                     textureData.height(),
+                     0,
+                     GL_RGB,
+                     GL_UNSIGNED_BYTE,
+                     textureData.castData<stbipp::Color3uc>().data());
+        applySamplerParametersOnTexture(GL_TEXTURE_2D, sampleParams);
+        applyTextureParameters(GL_TEXTURE_2D, textureParams);
+    }
     glBindTexture(GL_TEXTURE_2D, 0);
     m_heightTexture = textures[0];
     m_normalTexture = textures[1];
+    m_diffuseTexture = textures[2];
     if(!CHECK_NO_GL_ERROR)
     {
         throw std::runtime_error("Could not create texture object");
@@ -135,6 +151,8 @@ void Renderer::render() const
     glBindTexture(GL_TEXTURE_2D, m_heightTexture);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_normalTexture);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, m_diffuseTexture);
     glBindVertexArray(m_vao);
     glDrawElements(GL_PATCHES, m_nbTriangles, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
@@ -147,7 +165,7 @@ void Renderer::render() const
 
 Renderer::Renderer(const engine::PipelineShaderPaths& shaderPaths,
                    const engine::Scene& scene,
-                   const DisplacementMaps& maps):
+                   const MaterialMaps& maps):
   engine::GLProgram(shaderPaths), m_camera(scene.cameras[0]), m_nbTriangles(scene.meshes[0]->faces.size() * 3)
 {
     createVaoVboEbo(scene);

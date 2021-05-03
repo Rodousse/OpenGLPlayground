@@ -8,8 +8,9 @@
 class Renderer final : public engine::GLProgram
 {
   public:
-    struct DisplacementMaps
+    struct MaterialMaps
     {
+        std::string color{};
         std::string height{};
         std::string normal{};
     };
@@ -20,6 +21,7 @@ class Renderer final : public engine::GLProgram
     GLuint m_ebo;
     GLuint m_heightTexture;
     GLuint m_normalTexture;
+    GLuint m_diffuseTexture;
     GLuint m_PVMatID;
     GLuint m_lightDirID;
     GLuint m_displacementAmplitudeID;
@@ -28,11 +30,11 @@ class Renderer final : public engine::GLProgram
     engine::Viewport m_viewport;
 
     void createVaoVboEbo(const engine::Scene& scene);
-    void createTextures(const DisplacementMaps& maps);
+    void createTextures(const MaterialMaps& maps);
 
   public:
     void render() const;
-    Renderer(const engine::PipelineShaderPaths& shaderPaths, const engine::Scene& scene, const DisplacementMaps& maps);
+    Renderer(const engine::PipelineShaderPaths& shaderPaths, const engine::Scene& scene, const MaterialMaps& maps);
     ~Renderer();
 
     void setViewport(const engine::Viewport& viewport);
