@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 project(OpenGLPlayground
     VERSION 0.1.0
-    DESCRIPTION "Realtime rendering sandbox application"
+    DESCRIPTION "Realtime rendering sandbox applications"
     LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 14)
