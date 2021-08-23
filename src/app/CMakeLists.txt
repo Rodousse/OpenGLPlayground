@@ -8,6 +8,7 @@ add_subdirectory(02_3d_model)
 add_subdirectory(03_ubo)
 add_subdirectory(04_fbo)
 add_subdirectory(05_tessellation)
+add_subdirectory(06_shadows)
 
 message(STATUS ${WIN_DLL_LIST})
 
